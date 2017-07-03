@@ -1,5 +1,5 @@
 /*
-Primitive Oscillator
+Arduino LCD Oscilloscope
 
 Code originally created 07 July 2017
 by Ramast
