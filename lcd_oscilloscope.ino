@@ -6,7 +6,7 @@ by Ramast
 
 This code is under GPLv3 License
 
-https://github.com/ramast/arduino-primitive-oscillator
+https://github.com/ramast/arduino-lcd-oscilloscope
 */
 
 // include the LCD library
