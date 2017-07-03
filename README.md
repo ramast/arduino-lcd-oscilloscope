@@ -22,7 +22,7 @@ If you could run the example properly, you are already halfway through.
       }
 * Make sure you define the correct LCD pins in this line `LiquidCrystal lcd(12, 11, 5, 4, 3, 2);`
 * If all goes well, you should see output like this
-  <image goes here>
+  ![Test](https://raw.githubusercontent.com/ramast/arduino-primitive-oscillator/master/images/test.jpg "Test Image")
 
   These characters represent your arduino's analog pin reading, the first one represent the lowest reading (<110) while the full bar represent the highest reading (>1000).
   The star \* character is used to indicate high repeatition but more on that later.
@@ -38,13 +38,17 @@ If you could run the example properly, you are already halfway through.
 * For the sake of this demonstration change the line `MAX_REPEATITION = 19` to `MAX_REPEATITION = 9`
 * Connect a wire to analog pin A0 and the other side to ground (GND pin)
 * You should see something like that
-    <image goes here>
-  Here the first line is completely blank, means Arduino didn't detect any signal.
+    ![Ground Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscillator/master/images/ground.jpg "LCD Image")
+  Here the first line is completely blank, analog reading of pin A0 has been 0 (or at less than 100) 
   The 9's filling the second line indicate that each one of the top values was repeated 9 times.
-* Try to connect to Vin pin instead, the first line should now be filled with bars while second line is still filled with  9's
+* Try to connect to 5V pin instead, the first line should now be filled with bars while second line is still filled with  9's
+  ![5V Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscillator/master/images/5v.jpg "5V LCD Image")
+* If you connect to 3V pin, you would get half bar as expected
+  ![3V Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscillator/master/images/3-3v.jpg "3V LCD Image")
+
 * Now that we have done basic tests let's move to meaningful applications
 
-### Measure Frequency
+### Measure PWM duty cycle
 * Choose one of these pins (3, 5, 6, 10 or 11) and connect it to A0
 * Add the following lines to your `setup()` function
 
@@ -52,4 +56,24 @@ If you could run the example properly, you are already halfway through.
       analogWrite(<your_chosen_pin>, 128);
 
  * Now your LCD should show look something like this
-   <image goes here>
+   ![PWM Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscillator/master/images/pwm.jpg "PWM LCD Image")
+   From that image we can tell that:
+   1. It's a digital signal (5v or 0v)
+   2. 5v to 0v ratio is (on average) 7:8 so duty cycle is roughly 47%
+
+### Locating RX pin on android board
+We know that RX pin is pin 0 on android board but let's imagine this is an unknown circuit and we are trying to find the RX pin.
+
+* Make sure your arduino is connected to your computer and console is opened, in this example I used buad 9600.
+* Try connecting your test pin `A0` to RX Pin, you would notice the reading being positive all the time since we are not writing anything to Arduino.
+* On Linux I used the command `dd if=/dev/zero of=/dev/ttyACM0` to constantly write `0`s to Arduino's serial port.
+* You would notice the LCD's reading has changed to something like this
+  ![Serial Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscillator/master/images/serial_rx.jpg "Serial RX LCD Image")
+* Your output may differ if using different bitrate, use stty to find your console's current speed
+
+      localhost linux # stty -a -F /dev/ttyACM0 |grep speed
+      speed 9600 baud; rows 0; columns 0; line = 0;
+
+Notice that the output is consistent 1 high followed by 7 or 8 low, the output would be inconsistent if you tried writing random characters `dd if=/dev/urandom of=/dev/ttyACM0` and it will become all high if you stopped writing at all.
+
+Based on that you can be confident this is the RX pin, also since the bar is full we know it's a 5v serial communication. If it was only partially full then it's probably 3.3v
