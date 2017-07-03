@@ -1,5 +1,6 @@
-# Arduino LCD Oscilloscope
-If you have an Arduino and a small 16x2 character LCD you can create a primitive oscilloscope using this code.
+# Arduino LCD Oscilloscope ![Logo](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/serial_rx.jpg "Logo")
+
+If you have an Arduino and a small 16x2 character LCD you can use this code to create a primitive oscilloscope.
 
 ## Before you begin
 Make sure you are able to display ordinary text on your LCD. A good start is using Arduino's LCD Hello World example.
@@ -81,13 +82,13 @@ Notice that the output is consistent 1 high followed by 7 or 8 low, the output w
 Based on that you can be confident this is the RX pin, also since high signal is represented by full bar we know it's a 5v serial communication. If it 3v serial communication, the bar would've only been partially full.
 
 ## Choosing maximum number of repeatition
-LCD screen can only show 16 character per line and to make things worse refreshing it quickly make the values not readable at all so to save up space, we *try* to write each value once and state in the line below how many didn't was repeated. for example if we perform 10 readings to analog pin and got these values "900, 0, 0, 0, 0, 0, 50, 0, 0, 0, 900"
-We represent it like this
+LCD screen can only show 16 character per line. To make things worse, refreshing it quickly make the display unreadable. So, in order to save up space we *try* to write each value once and state it's repeatition count below it. for example if it performed 10 readings to analog pin and got these values "900, 0, 0, 0, 0, 0, 50, 0, 0, 0, 900"
+They would be represented like this
 
       9 0 5 0 9
       1 5 1 3 1
 
-There is a constant `MAX_REPEATITION` which allow you to decide how many times a value can be repeated before being represented once more. In the example above if we set `MAX_REPEATITION = 2`, we get this output.
+There is a constant `MAX_REPEATITION` which allow you to decide how many times a value can be repeated before being represented once more. In the example above if we set `MAX_REPEATITION = 2`, we get this output instead.
 
       9 0 0 5 0 9
       1 3 2 1 3 1
@@ -97,26 +98,25 @@ set `MAX_REPEATITION = 0` disable repeatition and your LCD output will look like
       9 0 0 0 0 0 5 5 5 0 0 0 9
       1 1 1 1 1 1 1 1 1 1 1 1 1
 
-__Note:__ `MAX_REPEATITION = 2` means a number maybe repeated up to 2 times **after** it's first reading so 3 times in total.
+__Note:__ `MAX_REPEATITION = 2` means a value may be repeated for up to 2 times **after** it's first reading so 3 times in total.
 
 ### Increasing repeatition byond 9
-Each character on the first line of the LCD has it's repeatition represented in the character right below it.
-So what happen if we set `MAX_REPEATITION` to something beyond 9, say `19`. Since I am only able to represent repeatition with one digit, I resort to voltage's bars to represent values beyond 9.
-so numbers becomes 0 to 9 then dotted line, one dash, two dashes, ...
+Each value has it's repeatition represented in the character below it, but what if `MAX_REPEATITION` is set to something beyond 9? Since I am only able to represent repeatition with one digit, I resort to voltage's bars to represent values beyond 9.
+so numbers becomes 0 to 9 then dotted line, one dash, two dashes, ... . That way number can be represented up to 19.
 
-If `MAX_REPEATITION` were to be increased beyond `19`, say for example `99` then bars start representing factors of 10.
-So after repeatition number 9, you get getting the dotted bar until repeatition number 19, then you get a dash until 29 and so on.
+If `MAX_REPEATITION` were to be increased beyond `19`, then bars start representing factors of 10.
+So after repeatition number 9, you get the dotted bar until repeatition number 19, then you get a dash until 29 and so on until 99.
 
-If `MAX_REPEATITION` increased beyond that point, you get a '\*' which means that value was repeated 100 or more times.
+If `MAX_REPEATITION` increased beyond 99, you get a '\*' for repeatitions beyond 99.
 
-__Note:__ In a stable/semi-stable signal the more you increase repeatition the longer it will take to refresh your LCD reading. For example say `MAX_REPEATITION = 1000` and you connect your `A0` to `5V`. In this case arduino will perform 1000 analog reading for *each* LCD character (16) so in total arduino needs to perform 16,000 reading before showing any result on your LCD.
-
+__Note:__ In a stable/semi-stable signal the more you increase repeatition the longer it will take for Arduino to refresh your LCD reading. For example say `MAX_REPEATITION = 1000` and you connect your `A0` to `5V`. In this case Arduino will perform 1000 analog reading for *each* LCD character (16) so in total Arduino needs to perform 16,000 reading before showing any result on your LCD.
 
 ## Disadvantages and design decisons
 
-Current implementation does the work on two separate phases. First phase is data collection and aggregation. Once this phase is complete the data is represented on the LCD and an appropriate `delay` is added to give you a chance to read it.
+Current implementation does the work on two separate phases. First phase is data collection and aggregation (analog readings and repeatition count). Once there is enough data, this data is represented all at once on the LCD and an appropriate `delay` is added to give you a chance to read it.
 
-My original code (not published) used to write data on LCD in *almost* realtime. It was perfect for things like testing a motion sensor or to see serial data as soon as they are written.
-However, Arduino needs time to set the cursor on the LCD, write the value, then set it again to bottom row and write repeatition number. When using the original code to measure something like RX data or PWM cycle, it produced semi-random repeatition because it misses many values while being busy talking to the LCD display.
+My original code (not published) used to write data on LCD as it was being read. It was perfect for things like testing a motion sensor or to see serial data as soon as they are written and it also looked more cool.
+However, Arduino needs time to set the cursor on the LCD, write the value, then set it again to bottom row and write repeatition number. When using the original code to measure something like RX data or PWM cycle, it could detect there is a signal but reported repeatition was semi-random because it misses many values while being busy talking to the LCD display.
 
+*Bottom Line:*
 The current implementation gives relatively accurate result but it's not good for detecting a sudden events (a signal from motion sensor or a single letter you've typed to a serial port).
