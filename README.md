@@ -56,7 +56,7 @@ If you could run the example properly, you are already halfway through.
       pinMode(<your_chosen_pin>, OUTPUT);
       analogWrite(<your_chosen_pin>, 128);
 
- * Now your LCD should show look something like this
+ * Now your LCD should look like that
    ![PWM Image](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/pwm.jpg "PWM LCD Image")
    
    From that output we can tell that:
