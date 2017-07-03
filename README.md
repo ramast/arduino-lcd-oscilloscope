@@ -22,7 +22,7 @@ If you could run the example properly, you are already halfway through.
       }
 * Make sure you define the correct LCD pins in this line `LiquidCrystal lcd(12, 11, 5, 4, 3, 2);`
 * If all goes well, you should see output like this
-  ![Test](https://raw.githubusercontent.com/ramast/arduino-primitive-oscilloscope/master/images/test.jpg "Test Image")
+  ![Test](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/test.jpg "Test Image")
 
   These characters represent your arduino's analog pin reading, the first one represent the lowest reading (<110) while the full bar represent the highest reading (>1000).
   The star \* character is used to indicate high repeatition but more on that later.
@@ -38,13 +38,13 @@ If you could run the example properly, you are already halfway through.
 * For the sake of this demonstration change the line `MAX_REPEATITION = 19` to `MAX_REPEATITION = 9`
 * Connect a wire to analog pin A0 and the other side to ground (GND pin)
 * You should see something like that
-    ![Ground Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscilloscope/master/images/ground.jpg "LCD Image")
+    ![Ground Image](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/ground.jpg "LCD Image")
   Here the first line is completely blank, analog reading of pin A0 has been 0 (or at less than 100) 
   The 9's filling the second line indicate that each one of the top values was repeated 9 times.
 * Try to connect to 5V pin instead, the first line should now be filled with bars while second line is still filled with  9's
-  ![5V Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscilloscope/master/images/5v.jpg "5V LCD Image")
+  ![5V Image](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/5v.jpg "5V LCD Image")
 * If you connect to 3V pin, you would get half bar as expected
-  ![3V Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscilloscope/master/images/3-3v.jpg "3V LCD Image")
+  ![3V Image](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/3-3v.jpg "3V LCD Image")
 
 * Now that we have done basic tests let's move to meaningful applications
 
@@ -56,7 +56,7 @@ If you could run the example properly, you are already halfway through.
       analogWrite(<your_chosen_pin>, 128);
 
  * Now your LCD should show look something like this
-   ![PWM Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscilloscope/master/images/pwm.jpg "PWM LCD Image")
+   ![PWM Image](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/pwm.jpg "PWM LCD Image")
    From that image we can tell that:
    1. It's a digital signal (5v or 0v)
    2. 5v to 0v ratio is (on average) 7:8 so duty cycle is roughly 47%
@@ -68,7 +68,7 @@ We know that RX pin is pin 0 on android board but let's imagine this is an unkno
 * Try connecting your test pin `A0` to RX Pin, you would notice the reading being positive all the time since we are not writing anything to Arduino.
 * On Linux I used the command `dd if=/dev/zero of=/dev/ttyACM0` to constantly write `0`s to Arduino's serial port.
 * You would notice the LCD's reading has changed to something like this
-  ![Serial Image](https://raw.githubusercontent.com/ramast/arduino-primitive-oscilloscope/master/images/serial_rx.jpg "Serial RX LCD Image")
+  ![Serial Image](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/serial_rx.jpg "Serial RX LCD Image")
 * Your output may differ if using different bitrate, use stty to find your console's current speed
 
       localhost linux # stty -a -F /dev/ttyACM0 |grep speed
