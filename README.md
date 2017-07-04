@@ -1,4 +1,4 @@
-# Arduino LCD Oscilloscope ![Logo](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/serial_rx.jpg "Logo")
+# Arduino LCD Oscilloscope ![Logo](https://raw.githubusercontent.com/ramast/arduino-lcd-oscilloscope/master/images/logo.jpg "Logo")
 
 If you have an Arduino and a small 16x2 character LCD you can use this code to create a primitive oscilloscope.
 
